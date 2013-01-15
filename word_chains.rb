@@ -1,24 +1,34 @@
+#Kriti - some of the ideas in there are right on!
+#Would love to see it once you'll can get it working 
+#It seems right now your until loop keeps looking at only the adj words for duck.
+#It isnt moving on to the next word in the adj words array
+
 class WordChains
   attr_accessor :dictionary, :word
 
   def initialize(word, target_word)
+    #Kriti - again u can use readlines instead of open and each_line.
+    #Ned mentioned choosing map over collect as a convention
     @dictionary = File.open("dictionary.txt").each_line.collect(&:strip)
     @word = Word.new(word)
     @target_word = target_word
     @dictionary = @dictionary.select { |word| word.length == @word.value.length }
-    @dictionary.delete(@word.value)
+    @dictionary.delete(@word.value) 
   end
 
+  #run and adjacent words are a little bigger than they can be
   def run
     word_arr = []
     word_arr << @word.value
-    adj_words = [word]
+    adj_words = [word] #Kriti - Whats the point of this line? its redundent right?
     adj_words = adjacent_words(word)
     adj_words.each { |w| word_arr += [w.value] }
     modify_dictionary(adj_words)
 
     until word_arr.include?(@target_word)
-      p word_arr
+      # p word_arr
+      #Kriti - you are repeating these lines of code. 
+      #See if you can find a way to bring the above block into the until loop 
       adj_words = adj_words_from_array(adj_words)
       adj_words.each { |w| word_arr += [w.value] }
       modify_dictionary(adj_words)
@@ -34,8 +44,10 @@ class WordChains
     @dictionary.each do |w|
       matches = 0
       char = 0
-
-      word.value.length.times do
+      #Kriti - instead of having the char variable, the .times function 
+      #allows for a parameter|i| equivalent to the index values in the words
+      #i.e., .times {|i| matches += 1 if w[i] == word[i]}
+      word.value.length.times do 
         if word.value[char] == w[char]
           matches += 1
         end
@@ -67,6 +79,10 @@ class WordChains
 
 end
 
+#Kriti - Ryan showed me that the best thing about having this class is that you can just
+#have each word only store one parent and because the parent is itself an instance of 
+#this class, you can very easily just iterate through and print the parents until u hit
+#the starting word
 class Word
   attr_accessor :value, :parents
 
